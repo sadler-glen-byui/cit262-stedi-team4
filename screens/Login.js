@@ -1,56 +1,26 @@
-// import react libraries
-
-import React, {useEffect} from "react";//react is a javascript library for user interfaces
+import React, {useEffect} from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from "react-native";
-
-// with asyncstorage I can save data on the device locally (ex: a login token)
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
-// with react-navigation I can change screens from one component to another easily
-import { useNavigation } from '@react-navigation/native';//this is another react hook
-
-// Login is a component name and it is the same name as the javascript file it resides in
-// There are 2 kinds of components: class-based, and functional components
-// if the component name doesn't say class before it, then it's functional (like below)
-
-//When passing parameters to a javascript function you can pass an object or plain parameter
-//Curly braces mean you're passing an object and the fields inside belong to that object
-//Plain parameters are position based which means you have to send them in the right order
-
-
-// React components call their parameters "props" short for "properties"
 const Login = ({loggedInState, loggedInStates,setLoggedInState})=>{
-// I have 3 props in this component:
-//  loggedInState
-//  loggedInStates
-//  setLoggedInState - it's a setter (function) to update loggedInState
 
-      const navigation = useNavigation();//we call the hook here to create a navigation object
+      const navigation = useNavigation();
 
-
-      // these are called state variables because they maintain the internal state of the component
-      const [emailAddress,setEmailAddress] = React.useState("");// this is how we make a state field and its setter
-      const [password, setPassword] = React.useState("");
+      const [phoneNumber,setPhoneNumber] = React.useState("");
+      const [oneTimePassword, setOneTimePassword] = React.useState("");
 
       // const [isBiometricSupported, setIsBiometricSupported] = React.useState(false);
       // const [isBiometricEnrolled, setIsBiometricEnrolled] = React.useState(false);
 
-// use effect is a hook - that means a special react function that accesses the 
-// react framework in a way that is unique
-// the useEffect hook lets you make application adjustments after each time the screen updates
-
-// so what is the below example doing after the screen updates?
  useEffect(()=>{
-  if(loggedInState==loggedInStates.LOGGED_IN){//if they are logged in...
-    navigation.replace('Navigation');//changes screens to the home screen with all the tabs
+  if(loggedInState==loggedInStates.LOGGED_IN){
+    navigation.replace('Navigation');
   }
  })    
 
- if(loggedInState==loggedInStates.NOT_LOGGED_IN){// every react component must return a view or a fragment
+ if(loggedInState==loggedInStates.NOT_LOGGED_IN){
     return (
-
-      //this is a View -- a View is a top level React Native Component- so everything has to be inside of a View
-      // it is very similar to a div in HTML (a section of the page)
       <View style={styles.allBody}>
         <Text style={styles.title}>Welcome Back</Text>
             {/* <Text style={styles.paragraph}> {isBiometricSupported ? 'Your device is compatible with Biometrics' 
@@ -60,12 +30,12 @@ const Login = ({loggedInState, loggedInStates,setLoggedInState})=>{
         : 'You have not saved a fingerprint or face'}
             </Text>            */}
               <TextInput 
-              value={emailAddress}
-              onChangeText={setEmailAddress}
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
               style={styles.input}
               backgroundColor='#e6f0d5'
               placeholderTextColor='#818181' 
-              placeholder='Email Address'>          
+              placeholder='Cell Phone'>          
                </TextInput>
 
             {/* <TouchableOpacity
@@ -86,32 +56,26 @@ const Login = ({loggedInState, loggedInStates,setLoggedInState})=>{
             <TouchableOpacity
                style={styles.sendButton}
               onPress={async ()=>{
-                console.log(emailAddress+' was entered')
-                
-                //what should the URL be to log in using a username and password below?
-                // how would I find out without Brother Murdock in the room?
-                // const sendTextResponse=await fetch(
-                //   'https://dev.stedi.me/login',
-                //   {
-                //     method:'POST',
-                //     headers:{
-                //      'content-type':'application/text'
-                //    },
-                //     body:JSON.stringify({//this converts a javascript object to a string -- fetch requires a string for the body
-                //       userName:emailAddress,
-                //       password// this is the same as saying password:password - but we have no password variable yet
-                //     })
-                //   }
-                // )
-                // const sendTextResponseData = await sendTextResponse.text();
-                // if(sendTextResponse.status!=200){//invalid phone number, send them to the signup page
-                //   await Alert.alert("Did you type your number correctly? "+phoneNumber);
-                // } else{
-                   setLoggedInState(loggedInStates.LOGGING_IN);
-                // }
+                console.log(phoneNumber+' Button was pressed')
+    
+                const sendTextResponse=await fetch(
+                  'https://dev.stedi.me/twofactorlogin/'+phoneNumber,
+                  {
+                    method:'POST',
+                    headers:{
+                     'content-type':'application/text'
+                   }
+                  }
+                )
+                const sendTextResponseData = await sendTextResponse.text();
+                if(sendTextResponse.status!=200){//invalid phone number, send them to the signup page
+                  await Alert.alert("Did you type your number correctly? "+phoneNumber);
+                } else{
+                  setLoggedInState(loggedInStates.LOGGING_IN);
+                }
               }}
             >
-              <Text style={{color:'white'}}>Login</Text>      
+              <Text style={{color:'white'}}>Send</Text>      
             </TouchableOpacity>
     
           </View>
@@ -121,12 +85,12 @@ const Login = ({loggedInState, loggedInStates,setLoggedInState})=>{
         return (
           <View style={styles.allBody}>
           <TextInput 
-            value={password}
-            onChangeText={setPassword}
+            value={oneTimePassword}
+            onChangeText={setOneTimePassword}
             style={styles.input}  
             placeholderTextColor='#818181' 
             backgroundColor='#e6f0d5'
-            placeholder='Password'   
+            placeholder='One Time Password'   
             keyboardType='numeric'>
           </TextInput>
           <TouchableOpacity
@@ -134,17 +98,18 @@ const Login = ({loggedInState, loggedInStates,setLoggedInState})=>{
               onPress={async ()=>{
                 console.log(phoneNumber+' Button was pressed')
     
-                const loginResponse= await fetch(
-                  'https://dev.stedi.me/login',
+                const loginResponse=await fetch(
+                  'https://dev.stedi.me/twofactorlogin',
                   {
                     method:'POST',
                     headers:{
                      'content-type':'application/text'
-                   },
+                    },
                     body:JSON.stringify({
-                      userName:emailAddress,
-                      password// this is the same as saying password:password - but we have no password variable yet
-                    })
+                      phoneNumber,
+                      oneTimePassword
+                    }
+                    )
                   }
                 )
                 if(loginResponse.status==200){//200 means the password was valid
