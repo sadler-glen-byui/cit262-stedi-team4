@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, Button } from 'react-native';
+import { StyleSheet, View, Text, Button } from "react-native";
 
 export default function Login(props) {
   return (
@@ -21,6 +21,12 @@ export default function Login(props) {
         title="Enest's button"
         onPress={() => {
           console.log("Hello Enest");
+        }}
+      ></Button>
+      <Button
+        title="Henry's button"
+        onPress={() => {
+          console.log("Hello Henry");
         }}
       ></Button>
     </View>
