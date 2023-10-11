@@ -6,7 +6,7 @@ export default function Login(props) {
     <View style={styles.login}>
       <Text>This is the Login Screen</Text>
       <Button
-        title="Log In"
+        title="Glen's button"
         onPress={() => {
           console.log("Hello Glen");
         }}
