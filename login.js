@@ -29,7 +29,13 @@ export default function Login(props) {
           console.log("Hello Henry");
         }}
       ></Button>
-    </View>
+      <Button
+        title="Okka's button"
+        onPress={() => {
+          console.log("Hello Okka");
+        }}
+  ></Button>
+      </View>
   );
 }
 
