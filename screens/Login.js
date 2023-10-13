@@ -92,6 +92,14 @@ const Login = ({ loggedInState, loggedInStates, setLoggedInState }) => {
           }}>
           <Text style={{ color: 'white' }}>Glen's Button</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.sendButton}
+          onPress={async () => {
+            console.log('Hello Enest');
+            Alert.alert('Hello Enest');
+          }}>
+          <Text style={{ color: 'white' }}>Enest's Button</Text>
+        </TouchableOpacity>
       </View>
     );
   } else if (loggedInState == loggedInStates.LOGGING_IN) {
