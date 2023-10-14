@@ -108,6 +108,14 @@ const Login = ({ loggedInState, loggedInStates, setLoggedInState }) => {
           }}>
           <Text style={{ color: 'white' }}>Okka's Button</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+          style={styles.sendButton}
+          onPress={async () => {
+            console.log('Hello Arã');
+            Alert.alert('Hello Arã');
+          }}>
+          <Text style={{ color: 'white' }}>Arã's Button</Text>
+          </TouchableOpacity>
       </View>
     );
   } else if (loggedInState == loggedInStates.LOGGING_IN) {
